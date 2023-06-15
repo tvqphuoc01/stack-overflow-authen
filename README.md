@@ -1,5 +1,4 @@
 # stack-overflow-authenticator-service
-# stack-overflow-main-service
 ## How to start working on this project
 ### Docker style
 
@@ -7,7 +6,7 @@ Build image from local Dockerfile
 
 
 Run base services of Parcel Perform projects.
-Clone [main-service](https://github.com/tvqphuoc01/stack-overflow-main-service.git) repository
+Clone [authenticator-service](https://github.com/tvqphuoc01/stack-overflow-authen) repository
 
 ```sh
 cd main_service
