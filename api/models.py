@@ -29,7 +29,7 @@ class User(models.Model):
     email = models.EmailField(max_length=100, blank=False, default='')
     password = models.CharField(max_length=100, blank=False, default='')
     account_status = models.CharField(max_length=100, blank=False, default='pending')
-    image_url = models.CharField(max_length=100, blank=False, default='')
+    image_url = models.CharField(max_length=100, blank=False, default='https://i.pravatar.cc/200')
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
     user_points = models.IntegerField(blank=False, default=0)
     
