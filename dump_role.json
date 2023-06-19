@@ -1,0 +1,16 @@
+[
+    {
+        "model": "api.Role",
+        "pk": "f45b5eb5-bdbf-44b1-8fb9-10eeb11046f3",
+        "fields": {
+            "role_description": "ADMIN"
+        }
+    },
+    {
+        "model": "api.Role",
+        "pk": "f45b5eb5-bdbf-44b1-8fb9-10eeb11046f4",
+        "fields": {
+            "role_description": "USER"
+        }
+    }
+]

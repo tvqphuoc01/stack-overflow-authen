@@ -32,7 +32,10 @@ def create_new_user(request):
     email = validated_data.get('email')
     password = validated_data.get('password')
     
-    hashed_password = encrypt(password)
+    try:
+        hashed_password = encrypt(password)
+    except Exception as e:
+        hashed_password = password
     
     # create new user
     try:
@@ -56,7 +59,8 @@ def create_new_user(request):
     except Exception as e:
         return Response(
             {
-                'message': 'Internal server error'
+                'message': 'Internal server error',
+                'error': f'{e}'
             },
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )

@@ -12,6 +12,7 @@ class Role(models.Model):
 
 class Permission(models.Model):
     id=models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    permission_name=models.CharField(max_length=100, blank=False, default='')
     permission_description=models.CharField(max_length=100, blank=False, default='')
 
     def __str__(self):
