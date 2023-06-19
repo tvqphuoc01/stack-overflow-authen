@@ -3,3 +3,4 @@ env
 *.sqlite3
 .pytest_cache
 postgres-data
+.env.dev

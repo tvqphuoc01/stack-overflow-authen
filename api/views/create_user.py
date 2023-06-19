@@ -1,5 +1,5 @@
 from django_cryptography.fields import encrypt
-
+from django.core.mail import send_mail
 from api.models import User, Role
 from api.serializers.user_serializers import UserSerializer
 
@@ -41,8 +41,10 @@ def create_new_user(request):
     try:
         # check if email already taken or not
         # if not, create new user
-        created = User.objects.get_or_create(full_name=name, email=email, password=hashed_password, role=Role.objects.get(role_description='USER'))
-        if created:
+        user, created = User.objects.get_or_create(full_name=name, email=email, password=hashed_password, role=Role.objects.get(role_description='USER'))
+        print(user.__dict__)
+        print(created)
+        if created == False:
             return Response(
                 {
                     'message': 'Email already taken'
@@ -50,6 +52,13 @@ def create_new_user(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
         else:
+            send_mail(
+                "Subject here",
+                "Here is the message.",
+                "test@gmail.com",
+                ["test.01@gmail.com"],
+                fail_silently=False,
+            )
             return Response(
                 {
                     'message': 'User created'
