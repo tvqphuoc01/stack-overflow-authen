@@ -65,4 +65,4 @@ chmod +x .git/hooks/pre-commit
 - Not catching generic exceptions and let Sentry handle them
 - Centralize side effects (update, create model, etc) in view
 - Use debug toolbar to profile API performace (could change to use other tools)
-- User data has to go through serializer
+- User data has to go through serializer to make sure it's valid
