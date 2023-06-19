@@ -1,6 +1,6 @@
 from django_cryptography.fields import encrypt
 
-from api.models import User
+from api.models import User, Role
 from api.serializers.user_serializers import UserSerializer
 
 from rest_framework import status
@@ -41,7 +41,7 @@ def create_new_user(request):
     try:
         # check if email already taken or not
         # if not, create new user
-        created = User.objects.get_or_create(full_name=name, email=email, password=hashed_password)
+        created = User.objects.get_or_create(full_name=name, email=email, password=hashed_password, role=Role.objects.get(role_description='USER'))
         if created:
             return Response(
                 {
