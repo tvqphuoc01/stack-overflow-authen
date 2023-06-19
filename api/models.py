@@ -28,7 +28,7 @@ class User(models.Model):
     full_name = models.CharField(max_length=100, blank=False, default='')
     email = models.EmailField(max_length=100, blank=False, default='')
     password = models.CharField(max_length=100, blank=False, default='')
-    account_status = models.CharField(max_length=100, blank=False, default='')
+    account_status = models.CharField(max_length=100, blank=False, default='pending')
     image_url = models.CharField(max_length=100, blank=False, default='')
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
     user_points = models.IntegerField(blank=False, default=0)
