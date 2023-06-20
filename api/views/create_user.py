@@ -1,6 +1,6 @@
 from django_cryptography.fields import encrypt
 from django.core.mail import send_mail
-from api.models import User, Role
+from api.models import User, Role, EmailValidationStatus
 from api.serializers.user_serializers import UserSerializer
 
 from rest_framework import status
@@ -52,13 +52,16 @@ def create_new_user(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
         else:
+            verification_link = f'http://localhost:8006/api/verify-user/?user_id={user.id}'
             send_mail(
                 "VERIFY EMAIL",
-                "Please verify your email to complete registration",
+                f"Please verify your email to complete registration by clicking this link: {verification_link}",
                 "udptnhom3@gmail.com",
                 [email],
                 fail_silently=False,
             )
+            new_verification_status = EmailValidationStatus.objects.create(user=user, email=email, validation_status=False, validation_code=user.id)
+            new_verification_status.save()
             return Response(
                 {
                     'message': 'User created'
