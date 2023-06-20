@@ -53,10 +53,10 @@ def create_new_user(request):
             )
         else:
             send_mail(
-                "Subject here",
-                "Here is the message.",
-                "test@gmail.com",
-                ["test.01@gmail.com"],
+                "VERIFY EMAIL",
+                "Please verify your email to complete registration",
+                "udptnhom3@gmail.com",
+                [email],
                 fail_silently=False,
             )
             return Response(
