@@ -1,4 +1,6 @@
-from api.models import User, EmailValidationStatus
+import hashlib
+
+from api.models import User, EmailValidationStatus, RolePermission
 from api.serializers.user_serializers import UserLoginSerializer
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -21,29 +23,33 @@ def authenticate_user(request):
     
     user_email = validated_data.get('email')
     user_password = validated_data.get('password')
-    
-    user = User.objects.filter(email=user_email, password=user_password)
-    verification_status = EmailValidationStatus.objects.filter(user=user[0])
+    hashed_password = hashlib.md5(user_password.encode()).hexdigest()
+    user = User.objects.filter(email=user_email, password=hashed_password).first()
+    verification_status = EmailValidationStatus.objects.filter(user=user).first()
     
     # check if user is verified or not
     # if not verified, return 401
-    if verification_status[0].validation_status == False:
+    if verification_status.validation_status == False:
         return Response(
             {
                 'message': 'User not verified'
             },
             status=status.HTTP_401_UNAUTHORIZED
         )
-        
     if user:
+        # get user permission
+        permission = RolePermission.objects.filter(role=user.role)
+        user_permission = []
+        for p in permission:
+            user_permission.append(p.permission.permission_description)
         return Response(
             {
                 'message': 'User authenticated',
                 'user_data': {
-                    'id': user[0].id,
-                    'user_full_name': user[0].full_name,
-                    'user_email': user[0].email,
-                    
+                    'id': user.id,
+                    'user_full_name': user.full_name,
+                    'user_email': user.email,
+                    'user_permission': user_permission,
                 }
             },
             status=status.HTTP_200_OK
