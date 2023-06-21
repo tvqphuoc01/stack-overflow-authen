@@ -41,7 +41,7 @@ def authenticate_user(request):
         permission = RolePermission.objects.filter(role=user.role)
         user_permission = []
         for p in permission:
-            user_permission.append(p.permission.permission_description)
+            user_permission.append(p.permission.permission_name)
         return Response(
             {
                 'message': 'User authenticated',
