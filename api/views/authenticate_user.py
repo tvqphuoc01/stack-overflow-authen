@@ -1,4 +1,4 @@
-from api.models import User
+from api.models import User, EmailValidationStatus
 from api.serializers.user_serializers import UserLoginSerializer
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -23,7 +23,18 @@ def authenticate_user(request):
     user_password = validated_data.get('password')
     
     user = User.objects.filter(email=user_email, password=user_password)
+    verification_status = EmailValidationStatus.objects.filter(user=user[0])
     
+    # check if user is verified or not
+    # if not verified, return 401
+    if verification_status[0].validation_status == False:
+        return Response(
+            {
+                'message': 'User not verified'
+            },
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+        
     if user:
         return Response(
             {
