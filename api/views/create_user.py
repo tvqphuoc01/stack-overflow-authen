@@ -1,4 +1,6 @@
-from django_cryptography.fields import encrypt
+# logging
+import logging
+import hashlib
 from django.core.mail import send_mail
 from api.models import User, Role, EmailValidationStatus
 from api.serializers.user_serializers import UserSerializer
@@ -33,7 +35,8 @@ def create_new_user(request):
     password = validated_data.get('password')
     
     try:
-        hashed_password = encrypt(password)
+        hashed_password = hashlib.md5(password.encode()).hexdigest()
+        logging.info(f'Hashed password: {hashed_password}')
     except Exception as e:
         hashed_password = password
     
@@ -42,9 +45,8 @@ def create_new_user(request):
         # check if email already taken or not
         # if not, create new user
         user, created = User.objects.get_or_create(full_name=name, email=email, password=hashed_password, role=Role.objects.get(role_description='USER'))
-        print(user.__dict__)
-        print(created)
         if created == False:
+            logging.info(f'Email already taken: {email}')
             return Response(
                 {
                     'message': 'Email already taken'
@@ -52,6 +54,7 @@ def create_new_user(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
         else:
+            logging.info(f'User created: {user.__dict__}')
             verification_link = f'http://localhost:8006/api/verify-user/?user_id={user.id}'
             send_mail(
                 "VERIFY EMAIL",
