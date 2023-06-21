@@ -1,5 +1,5 @@
 import hashlib
-
+import logging
 from api.models import User, EmailValidationStatus, RolePermission
 from api.serializers.user_serializers import UserLoginSerializer
 from rest_framework import status
@@ -30,6 +30,7 @@ def authenticate_user(request):
     # check if user is verified or not
     # if not verified, return 401
     if verification_status.validation_status == False:
+        logging.error(f'User not verified: {user_email}')
         return Response(
             {
                 'message': 'User not verified'
@@ -41,7 +42,9 @@ def authenticate_user(request):
         permission = RolePermission.objects.filter(role=user.role)
         user_permission = []
         for p in permission:
-            user_permission.append(p.permission.permission_name)
+            hash_permission = hashlib.md5(p.permission.permission_name.encode()).hexdigest()
+            user_permission.append(hash_permission)
+        logging.info(f'User authenticated: {user_email}')
         return Response(
             {
                 'message': 'User authenticated',
@@ -55,6 +58,7 @@ def authenticate_user(request):
             status=status.HTTP_200_OK
         )
     else:
+        logging.error(f'User not found: {user_email}')
         return Response(
             {
                 'message': 'User not found'
