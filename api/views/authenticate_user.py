@@ -25,6 +25,16 @@ def authenticate_user(request):
     user_password = validated_data.get('password')
     hashed_password = hashlib.md5(user_password.encode()).hexdigest()
     user = User.objects.filter(email=user_email, password=hashed_password).first()
+    
+    if not user:
+        logging.error(f'User not found: {user_email}')
+        return Response(
+            {
+                'message': 'User not found'
+            },
+            status=status.HTTP_404_NOT_FOUND
+        )
+    
     verification_status = EmailValidationStatus.objects.filter(user=user).first()
     
     # check if user is verified or not
@@ -37,32 +47,24 @@ def authenticate_user(request):
             },
             status=status.HTTP_401_UNAUTHORIZED
         )
-    if user:
-        # get user permission
-        permission = RolePermission.objects.filter(role=user.role)
-        user_permission = []
-        for p in permission:
-            hash_permission = hashlib.md5(p.permission.permission_name.encode()).hexdigest()
-            user_permission.append(hash_permission)
-        logging.info(f'User authenticated: {user_email}')
-        return Response(
-            {
-                'message': 'User authenticated',
-                'user_data': {
-                    'id': user.id,
-                    'user_full_name': user.full_name,
-                    'user_email': user.email,
-                    'user_permission': user_permission,
-                }
-            },
-            status=status.HTTP_200_OK
-        )
-    else:
-        logging.error(f'User not found: {user_email}')
-        return Response(
-            {
-                'message': 'User not found'
-            },
-            status=status.HTTP_404_NOT_FOUND
-        )
+    # get user permission
+    permission = RolePermission.objects.filter(role=user.role)
+    user_permission = []
+    for p in permission:
+        print(p)
+        hash_permission = hashlib.md5(p.permission.permission_name.encode()).hexdigest()
+        user_permission.append(hash_permission)
+    logging.info(f'User authenticated: {user_email}')
+    return Response(
+        {
+            'message': 'User authenticated',
+            'user_data': {
+                'id': user.id,
+                'user_full_name': user.full_name,
+                'user_email': user.email,
+                'user_permission': user_permission,
+            }
+        },
+        status=status.HTTP_200_OK
+    )
     
