@@ -76,3 +76,7 @@ chmod +x .git/hooks/pre-commit
 - Run docker network inspect NETWORK-NAME to check if the container is added to the network
 - install apt-get update && apt-get install ping to check if the container can ping to other container in the network
 - Change request url to http://your-container-name:8000 to request data from this repo
+
+## Some useful stackoverflow links
+1. https://stackoverflow.com/questions/66496983/flask-docker-2-containers-communication-connectionerror-httpconnectionpool
+    (check if the container can ping to other container in the network)
