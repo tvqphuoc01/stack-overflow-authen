@@ -124,3 +124,30 @@ def update_user_account_status(request):
         status=status.HTTP_200_OK
     )
 
+@api_view(["GET"])
+def check_user(request):
+    user_id = request.GET.get("user_id")
+    if not user_id:
+        return Response(
+            {
+                "message": "User id is required"
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+        
+    user = User.objects.filter(id=user_id).first()
+    if not user:
+        return Response(
+            {
+                "message": False
+            },
+            status=status.HTTP_200_OK
+        )
+    return Response(
+            {
+                "message": True
+            },
+            status=status.HTTP_200_OK
+        )
+
+
