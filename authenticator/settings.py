@@ -129,15 +129,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static-files/')
 
 # CORS ALLOWED ORIGINS
-<<<<<<< HEAD
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:8009",
-    "http://stack-overflow-authen-authenticator-1:8000",
-]
-=======
 CORS_ORIGIN_ALLOW_ALL = True
->>>>>>> 5cb065aca29ca88879b21b1ed70d592e49f4d74e
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
