@@ -10,6 +10,9 @@ from rest_framework.response import Response
 
 @api_view(['GET'])
 def get_user_validation_code(request):
+    """
+    get user validation code
+    """
     user_id = request.GET.get('user_id')
     
     if not user_id:
@@ -101,6 +104,10 @@ def authenticate_user(request):
 
 @api_view(['POST'])
 def reset_password(request):
+    """
+    Call get_user_validation_code to get reset key before calling this API
+    """
+    
     user_email = request.data.get('email')
     user_reset_key = request.data.get('reset_key') # get from EmailValidationStatus.validation_code
     
