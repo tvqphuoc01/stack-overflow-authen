@@ -179,3 +179,64 @@ def reset_password(request):
         status=status.HTTP_200_OK
     )
     
+@api_view(['POST'])
+def update_password(request):
+    """
+    Update user password when they change in profile page
+    
+    Call get_user_validation_code to get reset key before calling this API
+    """
+    
+    user_id = request.data.get('user_id')
+    new_password = request.data.get('new_password')
+    user_reset_key = request.data.get('reset_key') # get from EmailValidationStatus.validation_code
+    
+    if not user_id or not new_password or not user_reset_key:
+        return Response(
+            {
+                'message': 'Invalid request'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+        
+    # check validation key
+    validation_key = EmailValidationStatus.objects.filter(user__id=user_id).first()
+    if not validation_key or validation_key.validation_code != user_reset_key:
+        return Response(
+            {
+                'message': 'Invalid request'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+        
+    # check valid password
+    if len(new_password) < 10:
+        return Response(
+            {
+                'message': 'Please enter a password that is at least 10 characters long'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+        
+    # get user data
+    user = User.objects.filter(id=user_id).first()
+    
+    if not user:
+        logging.error(f'User not found: {user_id}')
+        return Response(
+            {
+                'message': 'User not found'
+            },
+            status=status.HTTP_404_NOT_FOUND
+        )
+    user.password = new_password
+    user.save()
+    
+    return Response(
+        {
+            'message': 'update password success',
+        },
+        status=status.HTTP_200_OK
+    )
+        
+    
