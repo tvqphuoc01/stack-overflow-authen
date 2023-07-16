@@ -8,6 +8,35 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+@api_view(['GET'])
+def get_user_validation_code(request):
+    user_id = request.GET.get('user_id')
+    
+    if not user_id:
+        return Response(
+            {
+                'message': 'Invalid request'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    try:
+        user_validation_code = EmailValidationStatus.objects.filter(user__id=user_id).first()
+    except Exception as e:
+        return Response(
+            {
+                'message': 'User not found'
+            },
+            status=status.HTTP_404_NOT_FOUND
+        )
+        
+    return Response(
+        {
+            'message': 'Get user validation code success',
+            'validation_code': user_validation_code.validation_code
+        },
+        status=status.HTTP_200_OK
+    )
+
 @api_view(['POST'])
 def authenticate_user(request):
     """
