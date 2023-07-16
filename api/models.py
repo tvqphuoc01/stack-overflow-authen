@@ -1,6 +1,7 @@
 import uuid
 import datetime
 from django.db import models
+from django.utils.crypto import get_random_string
 
 # Create your models here.
 class Role(models.Model):
@@ -42,6 +43,11 @@ class User(models.Model):
         for rp in role_permission:
             user_permission.append(rp.permission.permission_description)
         return user_permission
+    
+    def gen_new_password(self):
+        self.password = get_random_string(length=10)
+        self.save()
+        return self.password
     
 class EmailValidationStatus(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

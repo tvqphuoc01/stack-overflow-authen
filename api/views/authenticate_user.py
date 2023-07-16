@@ -1,5 +1,7 @@
 import hashlib
 import logging
+from django.core.mail import send_mail
+from django.utils.crypto import get_random_string
 from api.models import User, EmailValidationStatus, RolePermission
 from api.serializers.user_serializers import UserLoginSerializer
 from rest_framework import status
@@ -64,6 +66,79 @@ def authenticate_user(request):
                 'user_email': user.email,
                 'user_permission': user_permission,
             }
+        },
+        status=status.HTTP_200_OK
+    )
+
+@api_view(['POST'])
+def reset_password(request):
+    user_email = request.data.get('email')
+    user_reset_key = request.data.get('reset_key') # get from EmailValidationStatus.validation_code
+    
+    if not user_email or not user_reset_key:
+        return Response(
+            {
+                'message': 'Invalid request'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    validation_key = EmailValidationStatus.objects.filter(user__email=user_email).first()
+    if not validation_key:
+        return Response(
+            {
+                'message': 'Invalid request'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    if validation_key.validation_code != user_reset_key:
+        return Response(
+            {
+                'message': 'Invalid request'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    # get user data
+    user = User.objects.filter(email=user_email).first()
+    
+    if not user:
+        logging.error(f'User not found: {user_email}')
+        return Response(
+            {
+                'message': 'User not found'
+            },
+            status=status.HTTP_404_NOT_FOUND
+        )
+        
+    # generate new password
+    new_temp_password = User.gen_new_password(user)
+    try:
+        send_mail(
+            "RESET PASSWORD",
+            f"Your new password is: {new_temp_password}",
+            "udptnhom3@gmail.com",
+            [user_email],
+            fail_silently=False,
+        )
+    except Exception as e:
+        logging.error(f'Error sending email: {e}')
+        return Response(
+            {
+                'message': 'Error sending email'
+            },
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+    
+    # reset validation key
+    new_validation_key = get_random_string(length=5)
+    validation_key.validation_code = new_validation_key
+    validation_key.save()
+    
+    return Response(
+        {
+            'message': 'reset password success',
         },
         status=status.HTTP_200_OK
     )
