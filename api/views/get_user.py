@@ -74,6 +74,7 @@ def get_user_by_id(request):
             },
             status=status.HTTP_400_BAD_REQUEST
         )
+    user_permission = user.get_user_permission()
     return Response(
         {
             "message": "Get user successfully",
@@ -84,6 +85,7 @@ def get_user_by_id(request):
                 "account_status": user.account_status,
                 "image_url": user.image_url,
                 "user_points": user.user_points,
+                "permission": user_permission
             }
         },
         status=status.HTTP_200_OK

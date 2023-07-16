@@ -41,7 +41,7 @@ class User(models.Model):
         user_permission = []
         role_permission = RolePermission.objects.filter(role=self.role)
         for rp in role_permission:
-            user_permission.append(rp.permission.permission_description)
+            user_permission.append(rp.permission.permission_name)
         return user_permission
     
     def gen_new_password(self):
