@@ -1,0 +1,82 @@
+[
+    {
+        "model": "api.Permission",
+        "pk": "67c77029-2f61-4fe5-9371-0dd00bbe16c9",
+        "fields": {
+            "permission_description": "Can delete users",
+            "permission_name": "delete_user"
+        }
+    },
+    {
+        "model": "api.RolePermission",
+        "pk": "d6ce47a1-7f4a-4622-9b8e-50701d8ce5ad",
+        "fields": {
+            "role_description": "ADMIN",
+            "permission": "67c77029-2f61-4fe5-9371-0dd00bbe16c9"
+        }
+    },
+    {
+        "model": "api.Permission",
+        "pk": "d45ceb6b-eba8-4cfe-9dbc-0deb7abc9664",
+        "fields": {
+            "permission_description": "Can approve question, answer and comment status",
+            "permission_name": "approve_content"
+        }
+    },
+    {
+        "model": "api.RolePermission",
+        "pk": "61a0d0ea-460e-4f0e-8ced-8b05c5bee2dd",
+        "fields": {
+            "role_description": "ADMIN",
+            "permission": "d45ceb6b-eba8-4cfe-9dbc-0deb7abc9664"
+        }
+    },
+    {
+        "model": "api.Permission",
+        "pk": "b1a4b5a0-5b0a-4b0a-8b0a-0b0a0b0a0b0a",
+        "fields": {
+            "permission_description": "Can delete question, answer and comment",
+            "permission_name": "delete_content"
+        }
+    },
+    {
+        "model": "api.RolePermission",
+        "pk": "5e8cc5da-92c5-4464-b693-0c4b76883809",
+        "fields": {
+            "role_description": "ADMIN",
+            "permission": "b1a4b5a0-5b0a-4b0a-8b0a-0b0a0b0a0b0a"
+        }
+    },
+    {
+        "model": "api.Permission",
+        "pk": "b1a4b5a0-5b0a-4b0a-8b0a-0b0a0b0a0b0b",
+        "fields": {
+            "permission_description": "Can create new tag and delete existing tag",
+            "permission_name": "manage_tag"
+        }
+    },
+    {
+        "model": "api.RolePermission",
+        "pk": "5e8cc5da-92c5-4464-b693-0c4b76883810",
+        "fields": {
+            "role_description": "ADMIN",
+            "permission": "b1a4b5a0-5b0a-4b0a-8b0a-0b0a0b0a0b0b"
+        }
+    },
+    {
+        "model": "api.Permission",
+        "pk": "b1a4b5a0-5b0a-4b0a-8b0a-0b0a0b0a0b0c",
+        "fields": {
+            "permission_description": "Can create new category and delete existing category",
+            "permission_name": "manage_category"
+        }
+    },
+    {
+        "model": "api.RolePermission",
+        "pk": "5e8cc5da-92c5-4464-b693-0c4b76883811",
+        "fields": {
+            "role_description": "ADMIN",
+            "permission": "b1a4b5a0-5b0a-4b0a-8b0a-0b0a0b0a0b0c"
+        }
+    }
+]
