@@ -25,11 +25,12 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
     ports:
-      - 5432:5432
+      - 6543:5432
     networks:
       - stackoverflow
 volumes:
   postgres_data:
+
 
 networks:
   stackoverflow:

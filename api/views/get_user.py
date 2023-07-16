@@ -150,4 +150,31 @@ def check_user(request):
             status=status.HTTP_200_OK
         )
 
+@api_view(["GET"])
+def get_user_by_id_for_ranking_table(request):
+    user_id = request.GET.get("user_id")
+    if not user_id:
+        return Response(
+            {
+                "message": "User id is required"
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+        
+    user = User.objects.filter(id=user_id).values("image_url", "full_name").first()
+    if not user:
+        return Response(
+            {
+                "message": "User not found"
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    return Response(
+        {
+            "message": "Get user successfully",
+            "data": user
+        },
+        status=status.HTTP_200_OK
+    )
+
 
