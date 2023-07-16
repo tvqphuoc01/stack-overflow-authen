@@ -24,7 +24,7 @@
     },
     {
         "model": "api.RolePermission",
-        "pk": "k85b5eb5-bdbf-44b1-8fb9-10eeb11046f4",
+        "pk": "f45b5eb5-bdbf-44b1-8fb9-10eeb11046f4",
         "fields": {
             "role": "f45b5eb5-bdbf-44b1-8fb9-10eeb11046f4",
             "permission": "f45b5eb5-bdbf-44b1-8fb9-10eeb11046f9"
