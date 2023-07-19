@@ -18,3 +18,10 @@ class UserResponseSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'full_name', 'email', 'account_status',
                   'image_url', 'user_points']
+
+class RequestUserSerializer(serializers.Serializer):
+    user_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(),
+        source='user',
+        write_only=True
+    )
