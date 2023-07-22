@@ -85,7 +85,8 @@ def get_user_by_id(request):
                 "account_status": user.account_status,
                 "image_url": user.image_url,
                 "user_points": user.user_points,
-                "permission": user_permission
+                "permission": user_permission,
+                "role": user.role.role_description
             }
         },
         status=status.HTTP_200_OK

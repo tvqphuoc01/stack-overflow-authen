@@ -4,7 +4,7 @@ from api.views.authenticate_user import authenticate_user, reset_password, get_u
 from api.views.email_verifcation import verify_user
 from api.views.get_user import get_users, get_user_by_id, update_user_account_status, check_user, get_user_by_id_for_ranking_table
 from api.views.delete_user import delete_user
-from api.views.update_user import user_update_me
+from api.views.user_update_me import user_update_me
 
 urlpatterns = [
     path('create-user', create_new_user, name='create_user'),
