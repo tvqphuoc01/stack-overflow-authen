@@ -33,6 +33,8 @@ def create_new_user(request):
     name = validated_data.get('full_name')
     email = validated_data.get('email')
     password = validated_data.get('password')
+    image_url = request.data.get('image_url', "")
+    method = request.data.get('method', 'credential')
     
     try:
         hashed_password = hashlib.md5(password.encode()).hexdigest()
@@ -44,7 +46,10 @@ def create_new_user(request):
     try:
         # check if email already taken or not
         # if not, create new user
-        user, created = User.objects.get_or_create(full_name=name, email=email, password=hashed_password, role=Role.objects.get(role_description='USER'))
+        account_status = 0
+        if (method == "google"):
+            account_status = 1
+        user, created = User.objects.get_or_create(full_name=name, email=email, password=hashed_password, role=Role.objects.get(role_description='USER'), image_url=image_url, account_status=account_status)
         if created == False:
             logging.info(f'Email already taken: {email}')
             return Response(
@@ -55,22 +60,35 @@ def create_new_user(request):
             )
         else:
             logging.info(f'User created: {user.__dict__}')
-            verification_link = f'http://localhost:8006/api/verify-user/?user_id={user.id}'
-            send_mail(
-                "VERIFY EMAIL",
-                f"Please verify your email to complete registration by clicking this link: {verification_link}",
-                "udptnhom3@gmail.com",
-                [email],
-                fail_silently=False,
-            )
-            new_verification_status = EmailValidationStatus.objects.create(user=user, email=email, validation_status=False, validation_code=user.id)
-            new_verification_status.save()
-            return Response(
-                {
-                    'message': 'User created'
-                },
-                status=status.HTTP_201_CREATED
-            )
+            if (method == "credential"):
+                verification_link = f'http://localhost:8006/api/verify-user/?user_id={user.id}'
+                send_mail(
+                    "VERIFY EMAIL",
+                    f"Please verify your email to complete registration by clicking this link: {verification_link}",
+                    "udptnhom3@gmail.com",
+                    [email],
+                    fail_silently=False,
+                )
+                new_verification_status = EmailValidationStatus.objects.create(user=user, email=email, validation_status=False, validation_code=user.id)
+                new_verification_status.save()
+                return Response(
+                    {
+                        'message': 'User created',
+                    },
+                    status=status.HTTP_201_CREATED
+                )
+            elif (method == "google"):
+                return Response(
+                    {
+                        'message': 'User created',
+                        'data':{
+                            'id': user.id,
+                            'user_full_name': user.full_name,
+                            'user_email': user.email,
+                        }
+                    },
+                    status=status.HTTP_201_CREATED
+                )
     except Exception as e:
         return Response(
             {
