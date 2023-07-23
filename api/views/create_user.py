@@ -51,13 +51,26 @@ def create_new_user(request):
             account_status = 1
         user, created = User.objects.get_or_create(full_name=name, email=email, password=hashed_password, role=Role.objects.get(role_description='USER'), image_url=image_url, account_status=account_status)
         if created == False:
-            logging.info(f'Email already taken: {email}')
-            return Response(
-                {
-                    'message': 'Email already taken'
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            if (method == "credential"):
+                logging.info(f'Email already taken: {email}')
+                return Response(
+                    {
+                        'message': 'Email already taken'
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            elif (method == "google"):
+                return Response(
+                    {
+                        'message': 'User created',
+                        'data':{
+                            'id': user.id,
+                            'user_full_name': user.full_name,
+                            'user_email': user.email,
+                        }
+                    },
+                    status=status.HTTP_201_CREATED
+                )
         else:
             logging.info(f'User created: {user.__dict__}')
             if (method == "credential"):

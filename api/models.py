@@ -27,9 +27,9 @@ class RolePermission(models.Model):
 class User(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     full_name = models.CharField(max_length=100, blank=False, default='')
-    email = models.EmailField(max_length=100, blank=False, default='')
+    email = models.EmailField(max_length=100, blank=False, default='', unique=True)
     password = models.CharField(max_length=100, blank=False, default='')
-    account_status = models.CharField(max_length=100, blank=False, default='pending')
+    account_status = models.CharField(max_length=100, blank=False, default='0')
     image_url = models.CharField(max_length=100, blank=False, default='https://i.pravatar.cc/200')
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
     user_points = models.IntegerField(blank=False, default=0)

@@ -37,6 +37,7 @@ def get_users(request):
                 "data": serialized_users,
                 "total_pages": paginator.num_pages,
                 "current_page": users_page.number,
+                "total": users.count(),
             },
             status=status.HTTP_200_OK
         )
