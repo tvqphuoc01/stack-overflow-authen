@@ -3,7 +3,6 @@ from api.models import User, RolePermission
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
-from api.serializers.user_serializers import UserResponseSerializer
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
@@ -28,16 +27,26 @@ def get_users(request):
     paginator = Paginator(users, page_size)
     try:
         users_page = paginator.page(page_number)
-        print(users_page.object_list.values())
-        serialized_users = UserResponseSerializer(
-            users_page.object_list.values(), many=True).data
+        
+        response_data = []
+        
+        for user in users_page:
+            response_data.append({
+                "id": user.id,
+                "full_name": user.full_name,
+                "email": user.email,
+                "account_status": user.account_status,
+                "image_url": user.image_url,
+                "user_points": user.user_points,
+                "role": user.role.role_description,
+            })
+        
         return Response(
             {
                 "message": "Get user successfully",
-                "data": serialized_users,
+                "data": response_data,
                 "total_pages": paginator.num_pages,
                 "current_page": users_page.number,
-                "total": users.count(),
             },
             status=status.HTTP_200_OK
         )
@@ -86,8 +95,7 @@ def get_user_by_id(request):
                 "account_status": user.account_status,
                 "image_url": user.image_url,
                 "user_points": user.user_points,
-                "permission": user_permission,
-                "role": user.role.role_description
+                "permission": user_permission
             }
         },
         status=status.HTTP_200_OK
