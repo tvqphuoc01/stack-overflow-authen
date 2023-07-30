@@ -23,7 +23,6 @@ def get_users(request):
     page_size = request.GET.get('page_size', 10)
 
     users = User.objects.select_related('role').all()
-
     paginator = Paginator(users, page_size)
     try:
         users_page = paginator.page(page_number)
@@ -95,7 +94,8 @@ def get_user_by_id(request):
                 "account_status": user.account_status,
                 "image_url": user.image_url,
                 "user_points": user.user_points,
-                "permission": user_permission
+                "permission": user_permission,
+                "role": user.role.role_description
             }
         },
         status=status.HTTP_200_OK
