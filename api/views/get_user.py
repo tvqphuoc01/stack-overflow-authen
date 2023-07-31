@@ -1,4 +1,4 @@
-from api.models import User, RolePermission
+from api.models import User
 
 from rest_framework.response import Response
 from rest_framework import status
@@ -21,8 +21,9 @@ def get_users(request):
         
     page_number = request.GET.get('page', 1)
     page_size = request.GET.get('page_size', 10)
+    user_role = request.GET.get('user_role')
 
-    users = User.objects.select_related('role').all()
+    users = User.objects.select_related('role').filter(role__role_description=user_role).all()
     paginator = Paginator(users, page_size)
     try:
         users_page = paginator.page(page_number)
@@ -30,15 +31,15 @@ def get_users(request):
         response_data = []
         
         for user in users_page:
-            response_data.append({
-                "id": user.id,
-                "full_name": user.full_name,
-                "email": user.email,
-                "account_status": user.account_status,
-                "image_url": user.image_url,
-                "user_points": user.user_points,
-                "role": user.role.role_description,
-            })
+                response_data.append({
+                    "id": user.id,
+                    "full_name": user.full_name,
+                    "email": user.email,
+                    "account_status": user.account_status,
+                    "image_url": user.image_url,
+                    "user_points": user.user_points,
+                    "role": user.role.role_description
+                })
         
         return Response(
             {
@@ -46,6 +47,7 @@ def get_users(request):
                 "data": response_data,
                 "total_pages": paginator.num_pages,
                 "current_page": users_page.number,
+                "total": paginator.count
             },
             status=status.HTTP_200_OK
         )
