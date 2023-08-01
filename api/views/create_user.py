@@ -62,7 +62,7 @@ def create_new_user(request):
             elif (method == "google"):
                 return Response(
                     {
-                        'message': 'User created',
+                        'message': 'Login by google success',
                         'data':{
                             'id': user.id,
                             'user_full_name': user.full_name,
