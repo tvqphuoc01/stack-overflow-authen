@@ -49,8 +49,8 @@ def create_new_user(request):
         account_status = 0
         if (method == "google"):
             account_status = 1
-        user, created = User.objects.get_or_create(full_name=name, email=email, password=hashed_password, role=Role.objects.get(role_description='USER'), image_url=image_url, account_status=account_status)
-        if created == False:
+        created = User.objects.filter(email=email).first()
+        if created:
             if (method == "credential"):
                 logging.info(f'Email already taken: {email}')
                 return Response(
@@ -64,14 +64,15 @@ def create_new_user(request):
                     {
                         'message': 'Login by google success',
                         'data':{
-                            'id': user.id,
-                            'user_full_name': user.full_name,
-                            'user_email': user.email,
+                            'id': created.id,
+                            'user_full_name': created.full_name,
+                            'user_email': created.email,
                         }
                     },
                     status=status.HTTP_201_CREATED
                 )
         else:
+            user, created = User.objects.get_or_create(full_name=name, email=email, password=hashed_password, role=Role.objects.get(role_description='USER'), image_url=image_url, account_status=account_status)
             logging.info(f'User created: {user.__dict__}')
             if (method == "credential"):
                 verification_link = f'http://localhost:8006/api/verify-user/?user_id={user.id}'
