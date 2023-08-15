@@ -13,9 +13,9 @@ def get_user_validation_code(request):
     """
     get user validation code
     """
-    user_id = request.GET.get('user_id')
+    user_email = request.GET.get('user_email')
     
-    if not user_id:
+    if not user_email:
         return Response(
             {
                 'message': 'Invalid request'
@@ -23,7 +23,7 @@ def get_user_validation_code(request):
             status=status.HTTP_400_BAD_REQUEST
         )
     try:
-        user_validation_code = EmailValidationStatus.objects.filter(user__id=user_id).first()
+        user_validation_code = EmailValidationStatus.objects.filter(email=user_email).first()
     except Exception as e:
         return Response(
             {
