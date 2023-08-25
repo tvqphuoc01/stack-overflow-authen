@@ -1,5 +1,7 @@
 import uuid
 import datetime
+import logging
+import hashlib
 from django.db import models
 from django.utils.crypto import get_random_string
 
@@ -45,15 +47,22 @@ class User(models.Model):
         return user_permission
     
     def gen_new_password(self):
-        self.password = get_random_string(length=10)
+        password = get_random_string(length=10)
+        try:
+            hashed_password = hashlib.md5(password.encode()).hexdigest()
+            logging.info(f'Hashed password: {hashed_password}')
+        except Exception as e:
+            hashed_password = password
+        print(hashed_password)
+        self.password = hashed_password
         self.save()
-        return self.password
+        return password
     
 class EmailValidationStatus(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     email = models.EmailField(max_length=100, blank=False, default='')
-    validation_status = models.CharField(max_length=100, blank=False, default='')
+    validation_status = models.BooleanField(default=False)
     validation_code = models.CharField(max_length=100, blank=False, default='')
     created_at = models.DateTimeField(auto_now_add=True)
     

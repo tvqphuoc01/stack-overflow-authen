@@ -75,7 +75,7 @@ def create_new_user(request):
             user, created = User.objects.get_or_create(full_name=name, email=email, password=hashed_password, role=Role.objects.get(role_description='USER'), image_url=image_url, account_status=account_status)
             logging.info(f'User created: {user.__dict__}')
             if (method == "credential"):
-                verification_link = f'http://localhost:8006/api/verify-user/?user_id={user.id}'
+                verification_link = f'http://localhost:3000/verify?id={user.id}'
                 send_mail(
                     "VERIFY EMAIL",
                     f"Please verify your email to complete registration by clicking this link: {verification_link}",

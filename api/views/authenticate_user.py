@@ -119,7 +119,7 @@ def reset_password(request):
             status=status.HTTP_400_BAD_REQUEST
         )
     
-    validation_key = EmailValidationStatus.objects.filter(user__email=user_email).first()
+    validation_key = EmailValidationStatus.objects.filter(email=user_email).first()
     if not validation_key:
         return Response(
             {
