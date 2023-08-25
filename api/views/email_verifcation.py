@@ -19,6 +19,8 @@ def verify_user(request):
     if user:
         try:
             EmailValidationStatus.objects.filter(user=user[0]).update(validation_status=True)
+            user.account_status = 1
+            user.save()
             return Response(
                 {
                     'message': 'Verify user successfully',
